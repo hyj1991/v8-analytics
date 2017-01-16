@@ -1,6 +1,6 @@
 {
   "name": "v8-cpu-analysis",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "v8 cpu profiler log analysis",
   "main": "lib/analysis.js",
   "preferGlobal": true,
@@ -19,7 +19,8 @@
     "cpu",
     "profiler",
     "log",
-    "analysis"
+    "analysis",
+    "v8-profiler"
   ],
   "author": "hyj1991",
   "license": "ISC",
