@@ -1,6 +1,6 @@
 {
   "name": "v8-cpu-analysis",
-  "version": "0.0.5",
+  "version": "0.0.9",
   "description": "v8 cpu profiler log analysis",
   "main": "lib/analysis.js",
   "preferGlobal": true,
@@ -8,7 +8,7 @@
     "v8-cpu-analysis": "bin/analysis.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "v8-cpu-analysis ./test/profile1.json 500"
   },
   "repository": {
     "type": "git",

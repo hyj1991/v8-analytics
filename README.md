@@ -14,6 +14,22 @@ $ npm install v8-cpu-analysis -g
 ```bash
 $ npm install v8-cpu-analysis
 ```
+### Test
+if you install -g, try:
+
+```bash
+$ v8-cpu-analysis test
+$ v8-cpu-analysis test 200
+```
+200(ms) is the argument where you expect time every js function execute, all greater than this will be turned to red,
+you can also change 200(200ms) to 300(300ms), and the unit is ms
+
+if you js install this as a package, cd into v8-cpu-analysis package dir and try:
+
+```bash
+$ npm test
+```
+
 ## Quick Start
 You can use this at the command line or embedded in your js code
 

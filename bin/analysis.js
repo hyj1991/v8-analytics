@@ -264,9 +264,23 @@ function getCpuAnalysis(allData, timeout) {
     return createTree(finalData, uidFuncMap, timeout);
 }
 
+function test(timeout) {
+    timeout = timeout || 200;
+    try {
+        let allData = fs.readFileSync(path.join(__dirname, '../test/profile1.json'));
+        allData = JSON.parse(allData);
+        let str = getCpuAnalysis(allData, timeout);
+        console.log(str);
+    } catch (e) {
+        console.log(errorConsole('Test ') + errorConsole(e));
+    }
+
+}
+
 //入口函数
 function main() {
     let filename = program.args.shift();
+    if (filename === 'test') return test(program.args.shift());
     let timeout = parseInt(program.args.shift());
     if (!filename) {
         console.log(`${infoConsole('Please input filename! such as:')} "v8-cpu-analysis application.cpuprofile"`);
