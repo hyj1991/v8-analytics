@@ -1,11 +1,11 @@
 {
   "name": "v8-cpu-analysis",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "v8 cpu profiler log analysis",
   "main": "lib/analysis.js",
   "preferGlobal": true,
   "bin": {
-    "v8-cpu-analysis": "analysis.js"
+    "v8-cpu-analysis": "bin/analysis.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

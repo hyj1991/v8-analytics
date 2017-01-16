@@ -216,7 +216,7 @@ function createTree(tree, uidFuncMap, timeout) {
 
     let execTime = tree.execTime;
     let execTimeStr = execTime / 1000 >= 1 && (execTime / 1000).toFixed(2) + 's' || execTime.toFixed(1) + 'ms';
-    var string = [tree.funcName + '(' + execTimeStr + ' 100%)'];
+    var string = [warnConsole(tree.funcName) + '(' + execTimeStr + ' 100%)'];
     if (tree.children && tree.children.length) {
         string = string.concat(toString(tree.children, []));
     }
