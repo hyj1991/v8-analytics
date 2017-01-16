@@ -1,0 +1,29 @@
+{
+  "name": "v8-cpu-analysis",
+  "version": "0.0.1",
+  "description": "v8 cpu profiler log analysis",
+  "main": "lib/analysis.js",
+  "bin": {
+    "v8-cpu-analysis": "analysis.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://"
+  },
+  "keywords": [
+    "v8",
+    "cpu",
+    "profiler",
+    "log",
+    "analysis"
+  ],
+  "author": "hyj1991",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "lodash": "^4.17.4"
+  }
+}
