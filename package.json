@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://"
+    "url": "https://github.com/hyj1991/v8-cpu-analysis"
   },
   "keywords": [
     "v8",
