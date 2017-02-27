@@ -35,9 +35,9 @@ class TestCommand extends Command {
     };
 
     help() {
-        return this.helper.colorOutput.infoConsole(`Find DeOptimized Function And it's Reason, cmd example:\n`)
-            + `                                                         *   va bailout xxx.cpu.json\n`
-            + `                                                         *   va bailout xxx.cpu.json --only`;
+        return this.helper.colorOutput.infoConsole(`Find DeOptimized Functions And it's Reason, cmd example:\n`)
+            + `                                                          *   va bailout xxx.cpu.json\n`
+            + `                                                          *   va bailout xxx.cpu.json --only`;
     }
 }
 

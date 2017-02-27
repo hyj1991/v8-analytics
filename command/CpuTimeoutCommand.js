@@ -37,10 +37,10 @@ class TestCommand extends Command {
     };
 
     help() {
-        return this.helper.colorOutput.infoConsole(`Find Execute Time Out of Expect, cmd example:\n`)
-            + `                                               *   va timeout xxx.cpu.json\n`
-            + `                                               *   va timeout xxx.cpu.json 200\n`
-            + `                                               *   va timeout xxx.cpu.json 200 --only`;
+        return this.helper.colorOutput.infoConsole(`Find Functions Execute Time > Expected, cmd example:\n`)
+            + `                                                      *   va timeout xxx.cpu.json\n`
+            + `                                                      *   va timeout xxx.cpu.json 200\n`
+            + `                                                      *   va timeout xxx.cpu.json 200 --only`;
     }
 }
 
