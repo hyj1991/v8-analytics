@@ -1,11 +1,11 @@
 {
   "name": "v8-cpu-analysis",
-  "version": "0.0.9",
+  "version": "1.0.5",
   "description": "v8 cpu profiler log analysis",
   "main": "lib/analysis.js",
   "preferGlobal": true,
   "bin": {
-    "v8-cpu-analysis": "bin/analysis.js"
+    "va": "bin/analysis.js"
   },
   "scripts": {
     "test": "v8-cpu-analysis ./test/profile1.json 500"
@@ -26,6 +26,9 @@
   "license": "ISC",
   "dependencies": {
     "commander": "^2.9.0",
+    "common-bin": "^1.0.1",
+    "debug": "^2.6.1",
+    "glob": "^7.1.1",
     "lodash": "^4.17.4"
   }
 }
