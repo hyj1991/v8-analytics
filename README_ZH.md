@@ -1,4 +1,4 @@
-[English Version](https://github.com/hyj1991/v8-cpu-analysis/README.md)
+[English Version](https://github.com/hyj1991/v8-cpu-analysis/blob/master/README.md)
 
 [![npm version](https://badge.fury.io/js/v8-cpu-analysis.svg)](https://badge.fury.io/js/v8-cpu-analysis)
 [![Package Quality](http://npm.packagequality.com/shield/v8-cpu-analysis.svg)](http://packagequality.com/#?package=v8-cpu-analysis)
