@@ -1,6 +1,6 @@
 {
   "name": "v8-cpu-analysis",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "v8 cpu profiler log analysis",
   "main": "lib/analysis.js",
   "preferGlobal": true,
