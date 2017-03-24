@@ -5,14 +5,29 @@
 [![npm](https://img.shields.io/npm/dt/v8-cpu-analysis.svg)](https://www.npmjs.com/package/v8-cpu-analysis)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/hyj1991/v8-cpu-analysis/LICENSE)
 
-# v8-cpu-analysis
-v8-profiler cpu log analysis, for the log file created by v8-profiler，it can:
+# v8-analystics/v8-cpu-analysis
+
+Analysis the cpu & heap-memory log file which created by v8-profiler & heapdump，it can:
+
 * **show you functions which are optimized failed by v8 engine**
 * **show you functions which exectime greater than your expected**
+* **show you heap-memory as a gravity diagram**
+
+## Why Two Names？
+
+```v8-analystics``` is completely equivalent to ```v8-cpu-analysis```, there is no difference between them.
+
+Beacuse I want to introduce v8 engine's heap-memory analystics, so I think ```cpu``` in package name is not suitable. More, to be compatible with before, I chose them published comletely equivalent.
 
 ## Installation
 
 ### For Global
+
+```bash
+$ npm install v8-analystics -g
+```
+
+or
 
 ```bash
 $ npm install v8-cpu-analysis -g
@@ -21,8 +36,15 @@ $ npm install v8-cpu-analysis -g
 ### For Embedded JS code
 
 ```bash
+$ npm install v8-analystics
+```
+
+or
+
+```bash
 $ npm install v8-cpu-analysis
 ```
+
 ### Test
 if you install -g, try:
 
@@ -51,6 +73,7 @@ The ```xxx.cpu.json``` file created by v8-profiler:
 ```bash
 $ va bailout xxx.cpu.json
 ```
+
 This will list all Function, and turn the deoptimized function to red. You can also use like that:
 
 ```bash
@@ -62,16 +85,19 @@ This will only list the deoptimized functions.
 ```bash
 $ va timeout xxx.cpu.json
 ```
+
 This will list all Function, and their exectime
 
 ```bash
 $ va timeout xxx.cpu.json 200
 ```
+
 This will list all Function ,and turn the functions which exectime > 200ms to red.
 
 ```bash
 $ va timeout xxx.cpu.json 200 --only
 ```
+
 This will only list the functions which exectime > 200ms.
 
 ### II. Embedded JS Code
@@ -79,11 +105,13 @@ This will only list the functions which exectime > 200ms.
 ```js
 'use strict';
 const fs = require('fs');
-const cpuAnalysis = require('v8-cpu-analysis');
+const v8Analystics = require('v8-analytics');
+//or you can use following, they're equival
+//const v8Analystics = require('v8-cpu-analysis');
 
 const json = JSON.parse(fs.readFileSync('./data.json'));
 //list all js function and it's execTime
-const str = cpuAnalysis(json);
+const str = v8Analystics(json);
 
 console.log(str);
 ```

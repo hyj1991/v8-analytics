@@ -5,14 +5,29 @@
 [![npm](https://img.shields.io/npm/dt/v8-cpu-analysis.svg)](https://www.npmjs.com/package/v8-cpu-analysis)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/hyj1991/v8-cpu-analysis/LICENSE)
 
-# v8-cpu-analysis
-解析v8-profiler输出的cpu日志，可以提供
+# v8-analystics/v8-cpu-analysis
+
+解析v8-profiler和heapdump等工具输出的cpu & heap-memory日志，可以提供
+
 * **v8引擎逆优化或者优化失败的函数标红展示以及优化失败原因展示**
 * **函数执行时长超过预期标红展示**
+* **当前堆内内存结构引力图展示**
+
+## 为什么会有两个名字？
+
+```v8-analystics``` 和 ```v8-cpu-analysis``` 是完全等价的两个包，两者没有任何区别。
+
+起因是想对 ```v8-cpu-analysis``` 引入v8的堆内内存结构分析，这样子继续在包名中引入 ```cpu``` 字样就不太合适了，所以改了个包名，为了兼容以前，故采用两者完全等价发布的方式。
 
 ## 安装
 
 ### 全局安装
+
+```bash
+$ npm install v8-analystics -g
+```
+
+或者
 
 ```bash
 $ npm install v8-cpu-analysis -g
@@ -21,8 +36,15 @@ $ npm install v8-cpu-analysis -g
 ### 嵌入你的JS代码
 
 ```bash
+$ npm install v8-analystics
+```
+
+或者
+
+```bash
 $ npm install v8-cpu-analysis
 ```
+
 ### 测试样例
 如果你是全局安装的命令行模式：
 
@@ -51,11 +73,13 @@ $ va test timeout 200 --only
 ```bash
 $ va bailout xxx.cpu.json
 ```
+
 这里会展示出所有的函数，并且把其中触发v8引擎逆优化的函数标红，你也可以像下面这样使用：
 
 ```bash
 $ va bailout xxx.cpu.json --only
 ```
+
 这样子就只会展示逆优化的函数以及v8给出的逆优化原因。
 
 #### 发现那些执行时长超过预期的函数
@@ -63,16 +87,19 @@ $ va bailout xxx.cpu.json --only
 ```bash
 $ va timeout xxx.cpu.json
 ```
+
 这样会展示出所有的函数，以及其执行时长
 
 ```bash
 $ va timeout xxx.cpu.json 200
 ```
+
 这样使用除了会展示出所有的函数，还会将所有的执行时长超过200ms的函数给标红展示出来。
 
 ```bash
 $ va timeout xxx.cpu.json 200 --only
 ```
+
 这样使用只会将所有的执行时长超过200ms的函数列出来展示。
 
 ### II. 嵌入你的JS代码
@@ -80,11 +107,13 @@ $ va timeout xxx.cpu.json 200 --only
 ```js
 'use strict';
 const fs = require('fs');
-const cpuAnalysis = require('v8-cpu-analysis');
+const v8Analystics = require('v8-analytics');
+//你也可以使用下面的写法，两者完全等价：
+//const v8Analystics = require('v8-cpu-analysis');
 
 const json = JSON.parse(fs.readFileSync('./data.json'));
 //list all js function and it's execTime
-const str = cpuAnalysis(json);
+const str = v8Analystics(json);
 
 console.log(str);
 ```
