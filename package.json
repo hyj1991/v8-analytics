@@ -1,6 +1,6 @@
 {
   "name": "v8-cpu-analysis",
-  "version": "1.0.14",
+  "version": "1.1.0",
   "description": "v8 cpu profiler log analysis",
   "main": "lib/analysis.js",
   "preferGlobal": true,
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hyj1991/v8-cpu-analysis"
+    "url": "https://github.com/hyj1991/v8-analystics"
   },
   "keywords": [
     "v8",
