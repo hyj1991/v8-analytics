@@ -5,7 +5,7 @@
 [![npm](https://img.shields.io/npm/dt/v8-cpu-analysis.svg)](https://www.npmjs.com/package/v8-cpu-analysis)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/hyj1991/v8-cpu-analysis/LICENSE)
 
-# v8-analystics/v8-cpu-analysis
+# v8-analytics/v8-cpu-analysis
 
 解析v8-profiler和heapdump等工具输出的cpu & heap-memory日志，可以提供
 
@@ -15,7 +15,7 @@
 
 ## 为什么会有两个名字？
 
-```v8-analystics``` 和 ```v8-cpu-analysis``` 是完全等价的两个包，两者没有任何区别。
+```v8-analytics``` 和 ```v8-cpu-analysis``` 是完全等价的两个包，两者没有任何区别。
 
 起因是想对 ```v8-cpu-analysis``` 引入v8的堆内内存结构分析，这样子继续在包名中引入 ```cpu``` 字样就不太合适了，所以改了个包名，为了兼容以前，故采用两者完全等价发布的方式。
 
@@ -24,7 +24,7 @@
 ### 全局安装
 
 ```bash
-$ npm install v8-analystics -g
+$ npm install v8-analytics -g
 ```
 
 或者
@@ -36,7 +36,7 @@ $ npm install v8-cpu-analysis -g
 ### 嵌入你的JS代码
 
 ```bash
-$ npm install v8-analystics
+$ npm install v8-analytics
 ```
 
 或者
@@ -107,13 +107,13 @@ $ va timeout xxx.cpu.json 200 --only
 ```js
 'use strict';
 const fs = require('fs');
-const v8Analystics = require('v8-analytics');
+const v8Analytics = require('v8-analytics');
 //你也可以使用下面的写法，两者完全等价：
-//const v8Analystics = require('v8-cpu-analysis');
+//const v8Analytics = require('v8-cpu-analysis');
 
 const json = JSON.parse(fs.readFileSync('./data.json'));
 //list all js function and it's execTime
-const str = v8Analystics(json);
+const str = v8Analytics(json);
 
 console.log(str);
 ```
