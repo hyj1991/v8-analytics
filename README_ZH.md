@@ -11,7 +11,7 @@
 
 * **v8引擎逆优化或者优化失败的函数标红展示以及优化失败原因展示**
 * **函数执行时长超过预期标红展示**
-* **当前堆内内存结构引力图展示**
+* **当前项目中可疑的内存泄漏点展示**
 
 ## 为什么会有两个名字？
 
@@ -56,10 +56,13 @@ $ va test bailout --only
 $ va test timeout
 $ va test timeout 200
 $ va test timeout 200 --only
+$ va test leak
 ```
 ```va test bailout --only``` 这个命令可以只把那些v8引擎逆优化的函数列出来展示。
 
 ```va test timeout 200 --only``` 这个命令可以只把那些执时长超过200ms的函数列出来展示。
+
+```va test leak``` 可疑展示出测试的heapsnapshot文件中可疑的内存泄漏点。
 
 ## 快速开始
 这个npm包可以即用作于全局命令行模式，也可以嵌入你的JS代码：
@@ -102,18 +105,29 @@ $ va timeout xxx.cpu.json 200 --only
 
 这样使用只会将所有的执行时长超过200ms的函数列出来展示。
 
+#### 找出可疑的内存泄漏点
+
+```
+$ va leak xxx.mem.json
+```
+
+这样使用可以列出当前Node项目中可疑的内存泄漏点。
+
 ### II. 嵌入你的JS代码
 
 ```js
 'use strict';
 const fs = require('fs');
 const v8Analytics = require('v8-analytics');
-//你也可以使用下面的写法，两者完全等价：
+//or you can use following, they're equival
 //const v8Analytics = require('v8-cpu-analysis');
 
-const json = JSON.parse(fs.readFileSync('./data.json'));
 //list all js function and it's execTime
+const json = JSON.parse(fs.readFileSync('./test.cpu.json'));
 const str = v8Analytics(json);
-
 console.log(str);
+
+//list you heap memory info
+const json = JSON.parse(fs.readFileSync('./test.mem.json'));
+const {leakPoint, heapMap, statistics} = analysisLib.memAnalytics(allData)
 ```

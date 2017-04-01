@@ -14,6 +14,7 @@ class Program extends BaseProgram {
         this.addCommand('test', path.join(__dirname, 'command/TestCommand.js'));
         this.addCommand('bailout', path.join(__dirname, 'command/CpuBailoutCommand.js'));
         this.addCommand('timeout', path.join(__dirname, 'command/CpuTimeoutCommand.js'));
+        this.addCommand('leak', path.join(__dirname, 'command/LeakPointCommand.js'));
     }
 }
 

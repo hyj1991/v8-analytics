@@ -11,7 +11,7 @@ Analysis the cpu & heap-memory log file which created by v8-profiler & heapdumpï
 
 * **show you functions which are optimized failed by v8 engine**
 * **show you functions which exectime greater than your expected**
-* **show you heap-memory as a gravity diagram**
+* **show you suspicious memory leak point**
 
 ## Why Two Namesï¼Ÿ
 
@@ -56,10 +56,13 @@ $ va test bailout --only
 $ va test timeout
 $ va test timeout 200
 $ va test timeout 200 --only
+$ va test leak
 ```
 ```va test bailout --only``` can list you all functions which are deoptimized, and it's deoptimization reason.
 
 ```va test timeout 200 --only``` can list you all function which exectime > 200ms.
+
+```va test leak``` cans list you suspicious leak point in your project.
 
 ## Quick Start
 You can use this at the command line or embedded in your js code
@@ -82,6 +85,7 @@ $ va bailout xxx.cpu.json --only
 This will only list the deoptimized functions.
 
 #### Find Funtion Exectime Greater Than Expected
+
 ```bash
 $ va timeout xxx.cpu.json
 ```
@@ -100,6 +104,14 @@ $ va timeout xxx.cpu.json 200 --only
 
 This will only list the functions which exectime > 200ms.
 
+#### Find suspicious memory leak point
+
+```
+$ va leak xxx.mem.json
+```
+
+This will show you suspicous leak ponit in your node.js project.
+
 ### II. Embedded JS Code
 
 ```js
@@ -109,9 +121,12 @@ const v8Analytics = require('v8-analytics');
 //or you can use following, they're equival
 //const v8Analytics = require('v8-cpu-analysis');
 
-const json = JSON.parse(fs.readFileSync('./data.json'));
 //list all js function and it's execTime
+const json = JSON.parse(fs.readFileSync('./test.cpu.json'));
 const str = v8Analytics(json);
-
 console.log(str);
+
+//list you heap memory info
+const json = JSON.parse(fs.readFileSync('./test.mem.json'));
+const {leakPoint, heapMap, statistics} = analysisLib.memAnalytics(allData)
 ```
