@@ -906,6 +906,8 @@ HeapSnapshotWorker.HeapSnapshot = class {
         this._buildDominatedNodes();
         this._progress.updateStatus('Calculating statistics\u2026');
         this.calculateStatistics();
+        this._progress.updateStatus('Calculating aggregates\u2026');
+        this.aggregatesWithFilter(new HeapSnapshotModel.NodeFilter());
         this._progress.updateStatus('Calculating samples\u2026');
         this._buildSamples();
         this._progress.updateStatus('Finished processing.');
