@@ -39,7 +39,6 @@ class TestCommand extends Command {
                 ${output.errorConsole(e)}`)
 
         }
-
     };
 
     help() {
