@@ -903,13 +903,13 @@ HeapSnapshotWorker.HeapSnapshot = class {
         this._progress.updateStatus('Calculating retained sizes\u2026');
         this._calculateRetainedSizes(result.postOrderIndex2NodeOrdinal);
         this._progress.updateStatus('Building dominated nodes\u2026');
-        this._buildDominatedNodes();
+        // this._buildDominatedNodes();
         this._progress.updateStatus('Calculating statistics\u2026');
         this.calculateStatistics();
         this._progress.updateStatus('Calculating aggregates\u2026');
         this.aggregatesWithFilter(new HeapSnapshotModel.NodeFilter());
         this._progress.updateStatus('Calculating samples\u2026');
-        this._buildSamples();
+        // this._buildSamples();
         this._progress.updateStatus('Finished processing.');
 
         if (this._profile.snapshot.trace_function_count) {
@@ -924,7 +924,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
                 let traceNodeId = node.traceNodeId();
                 let stats = liveObjects[traceNodeId];
                 if (!stats)
-                    liveObjects[traceNodeId] = stats = {count: 0, size: 0, ids: []};
+                    liveObjects[traceNodeId] = stats = { count: 0, size: 0, ids: [] };
                 stats.count++;
                 stats.size += node.selfSize();
                 stats.ids.push(node.id());
@@ -963,7 +963,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
         let nodeCount = this.nodeCount;
 
         for (let toNodeFieldIndex = edgeToNodeOffset, l = containmentEdges.length; toNodeFieldIndex < l;
-             toNodeFieldIndex += edgeFieldsCount) {
+            toNodeFieldIndex += edgeFieldsCount) {
             let toNodeIndex = containmentEdges[toNodeFieldIndex];
             if (toNodeIndex % nodeFieldCount)
                 throw new Error('Invalid toNodeIndex ' + toNodeIndex);
@@ -1231,7 +1231,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
                 selfSizes[i] = node.selfSize();
             }
 
-            this._aggregatesForDiff[className] = {indexes: indexes, ids: ids, selfSizes: selfSizes};
+            this._aggregatesForDiff[className] = { indexes: indexes, ids: ids, selfSizes: selfSizes };
         }
         return this._aggregatesForDiff;
     }
@@ -1377,7 +1377,8 @@ HeapSnapshotWorker.HeapSnapshot = class {
                     maxRet: 0,
                     type: nodeType,
                     name: nameMatters ? node.name() : null,
-                    idxs: [nodeIndex]
+                    // idxs: [nodeIndex],
+                    idxs: []
                 };
                 aggregates[classIndex] = value;
                 classIndexes.push(classIndex);
@@ -1387,7 +1388,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
                 clss.distance = Math.min(clss.distance, nodeDistances[nodeOrdinal]);
                 ++clss.count;
                 clss.self += selfSize;
-                clss.idxs.push(nodeIndex);
+                // clss.idxs.push(nodeIndex);
             }
         }
 
@@ -1396,7 +1397,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
             let classIndex = classIndexes[i];
             aggregates[classIndex].idxs = aggregates[classIndex].idxs.slice();
         }
-        return {aggregatesByClassName: aggregatesByClassName, aggregatesByClassIndex: aggregates};
+        return { aggregatesByClassName: aggregatesByClassName, aggregatesByClassIndex: aggregates };
     }
 
     _calculateClassesRetainedSize(aggregates, filter) {
@@ -1719,7 +1720,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
                     let beginEdgeToNodeFieldIndex = firstEdgeIndexes[nodeOrdinal] + edgeToNodeOffset;
                     let endEdgeToNodeFieldIndex = firstEdgeIndexes[nodeOrdinal + 1];
                     for (let toNodeFieldIndex = beginEdgeToNodeFieldIndex; toNodeFieldIndex < endEdgeToNodeFieldIndex;
-                         toNodeFieldIndex += edgeFieldsCount) {
+                        toNodeFieldIndex += edgeFieldsCount) {
                         let childNodeOrdinal = containmentEdges[toNodeFieldIndex] / nodeFieldCount;
                         affected[nodeOrdinal2PostOrderIndex[childNodeOrdinal]] = 1;
                     }
@@ -2204,7 +2205,7 @@ HeapSnapshotWorker.HeapSnapshotEdgesProvider = class extends HeapSnapshotWorker.
     constructor(snapshot, filter, edgesIter, indexProvider) {
         let iter = filter ?
             new HeapSnapshotWorker.HeapSnapshotFilteredIterator(
-                edgesIter, /** @type {function(!HeapSnapshotWorker.HeapSnapshotItem):boolean} */ (filter)) :
+                edgesIter, /** @type {function(!HeapSnapshotWorker.HeapSnapshotItem):boolean} */(filter)) :
             edgesIter;
         super(iter, indexProvider);
         this.snapshot = snapshot;
@@ -2305,7 +2306,7 @@ HeapSnapshotWorker.HeapSnapshotNodesProvider = class extends HeapSnapshotWorker.
 
         if (filter) {
             it = new HeapSnapshotWorker.HeapSnapshotFilteredIterator(
-                it, /** @type {function(!HeapSnapshotWorker.HeapSnapshotItem):boolean} */ (filter));
+                it, /** @type {function(!HeapSnapshotWorker.HeapSnapshotItem):boolean} */(filter));
         }
         super(it, indexProvider);
         this.snapshot = snapshot;
@@ -2595,7 +2596,7 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
      * @return {?{map: !Uint32Array, flag: number}}
      */
     userObjectsMapAndFlag() {
-        return {map: this._flags, flag: this._nodeFlags.pageObject};
+        return { map: this._flags, flag: this._nodeFlags.pageObject };
     }
 
     /**
@@ -2697,7 +2698,7 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
 
         // Populate the entry points. They are Window objects and DOM Tree Roots.
         for (let edgeIndex = firstEdgeIndexes[rootNodeOrdinal], endEdgeIndex = firstEdgeIndexes[rootNodeOrdinal + 1];
-             edgeIndex < endEdgeIndex; edgeIndex += edgeFieldsCount) {
+            edgeIndex < endEdgeIndex; edgeIndex += edgeFieldsCount) {
             let edgeType = containmentEdges[edgeIndex + edgeTypeOffset];
             let nodeIndex = containmentEdges[edgeIndex + edgeToNodeOffset];
             if (edgeType === edgeElementType) {
@@ -2896,7 +2897,7 @@ HeapSnapshotWorker.JSHeapSnapshotNode = class extends HeapSnapshotWorker.HeapSna
             let firstNodeIndex = 0;
             let secondNodeIndex = 0;
             for (let edgeIndex = beginEdgeIndex; edgeIndex < endEdgeIndex && (!firstNodeIndex || !secondNodeIndex);
-                 edgeIndex += edgeFieldsCount) {
+                edgeIndex += edgeFieldsCount) {
                 let edgeType = edges[edgeIndex + edgeTypeOffset];
                 if (edgeType === edgeInternalType) {
                     let edgeName = strings[edges[edgeIndex + edgeNameOffset]];
