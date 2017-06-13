@@ -1,4 +1,5 @@
 'use strict';
+const co = require('co');
 const HeapSnapshotModel = require('./HeapSnapshotModel');
 const HeapSnapshotWorker = {};
 
@@ -839,98 +840,104 @@ HeapSnapshotWorker.HeapSnapshot = class {
     /**
      * @protected
      */
-    initialize() {
-        let meta = this._metaNode;
+    initializeP() {
+        return co.call(this, _initialize);
 
-        this._nodeTypeOffset = meta.node_fields.indexOf('type');
-        this._nodeNameOffset = meta.node_fields.indexOf('name');
-        this._nodeIdOffset = meta.node_fields.indexOf('id');
-        this._nodeSelfSizeOffset = meta.node_fields.indexOf('self_size');
-        this._nodeEdgeCountOffset = meta.node_fields.indexOf('edge_count');
-        this._nodeTraceNodeIdOffset = meta.node_fields.indexOf('trace_node_id');
-        this._nodeFieldCount = meta.node_fields.length;
+        /**
+         * @inner
+         */
+        function* _initialize() {
+            let meta = this._metaNode;
 
-        this._nodeTypes = meta.node_types[this._nodeTypeOffset];
-        this._nodeArrayType = this._nodeTypes.indexOf('array');
-        this._nodeHiddenType = this._nodeTypes.indexOf('hidden');
-        this._nodeObjectType = this._nodeTypes.indexOf('object');
-        this._nodeNativeType = this._nodeTypes.indexOf('native');
-        this._nodeConsStringType = this._nodeTypes.indexOf('concatenated string');
-        this._nodeSlicedStringType = this._nodeTypes.indexOf('sliced string');
-        this._nodeCodeType = this._nodeTypes.indexOf('code');
-        this._nodeSyntheticType = this._nodeTypes.indexOf('synthetic');
+            this._nodeTypeOffset = meta.node_fields.indexOf('type');
+            this._nodeNameOffset = meta.node_fields.indexOf('name');
+            this._nodeIdOffset = meta.node_fields.indexOf('id');
+            this._nodeSelfSizeOffset = meta.node_fields.indexOf('self_size');
+            this._nodeEdgeCountOffset = meta.node_fields.indexOf('edge_count');
+            this._nodeTraceNodeIdOffset = meta.node_fields.indexOf('trace_node_id');
+            this._nodeFieldCount = meta.node_fields.length;
 
-        this._edgeFieldsCount = meta.edge_fields.length;
-        this._edgeTypeOffset = meta.edge_fields.indexOf('type');
-        this._edgeNameOffset = meta.edge_fields.indexOf('name_or_index');
-        this._edgeToNodeOffset = meta.edge_fields.indexOf('to_node');
+            this._nodeTypes = meta.node_types[this._nodeTypeOffset];
+            this._nodeArrayType = this._nodeTypes.indexOf('array');
+            this._nodeHiddenType = this._nodeTypes.indexOf('hidden');
+            this._nodeObjectType = this._nodeTypes.indexOf('object');
+            this._nodeNativeType = this._nodeTypes.indexOf('native');
+            this._nodeConsStringType = this._nodeTypes.indexOf('concatenated string');
+            this._nodeSlicedStringType = this._nodeTypes.indexOf('sliced string');
+            this._nodeCodeType = this._nodeTypes.indexOf('code');
+            this._nodeSyntheticType = this._nodeTypes.indexOf('synthetic');
 
-        this._edgeTypes = meta.edge_types[this._edgeTypeOffset];
-        this._edgeTypes.push('invisible');
-        this._edgeElementType = this._edgeTypes.indexOf('element');
-        this._edgeHiddenType = this._edgeTypes.indexOf('hidden');
-        this._edgeInternalType = this._edgeTypes.indexOf('internal');
-        this._edgeShortcutType = this._edgeTypes.indexOf('shortcut');
-        this._edgeWeakType = this._edgeTypes.indexOf('weak');
-        this._edgeInvisibleType = this._edgeTypes.indexOf('invisible');
+            this._edgeFieldsCount = meta.edge_fields.length;
+            this._edgeTypeOffset = meta.edge_fields.indexOf('type');
+            this._edgeNameOffset = meta.edge_fields.indexOf('name_or_index');
+            this._edgeToNodeOffset = meta.edge_fields.indexOf('to_node');
 
-        this.nodeCount = this.nodes.length / this._nodeFieldCount;
-        this._edgeCount = this.containmentEdges.length / this._edgeFieldsCount;
+            this._edgeTypes = meta.edge_types[this._edgeTypeOffset];
+            this._edgeTypes.push('invisible');
+            this._edgeElementType = this._edgeTypes.indexOf('element');
+            this._edgeHiddenType = this._edgeTypes.indexOf('hidden');
+            this._edgeInternalType = this._edgeTypes.indexOf('internal');
+            this._edgeShortcutType = this._edgeTypes.indexOf('shortcut');
+            this._edgeWeakType = this._edgeTypes.indexOf('weak');
+            this._edgeInvisibleType = this._edgeTypes.indexOf('invisible');
 
-        this._retainedSizes = new Float64Array(this.nodeCount);
-        this._firstEdgeIndexes = new Uint32Array(this.nodeCount + 1);
-        this._retainingNodes = new Uint32Array(this._edgeCount);
-        this._retainingEdges = new Uint32Array(this._edgeCount);
-        this._firstRetainerIndex = new Uint32Array(this.nodeCount + 1);
-        this._nodeDistances = new Int32Array(this.nodeCount);
-        this._firstDominatedNodeIndex = new Uint32Array(this.nodeCount + 1);
-        this._dominatedNodes = new Uint32Array(this.nodeCount - 1);
+            this.nodeCount = this.nodes.length / this._nodeFieldCount;
+            this._edgeCount = this.containmentEdges.length / this._edgeFieldsCount;
 
-        this._progress.updateStatus('Building edge indexes\u2026');
-        this._buildEdgeIndexes();
-        this._progress.updateStatus('Building retainers\u2026');
-        this._buildRetainers();
-        this._progress.updateStatus('Calculating node flags\u2026');
-        this.calculateFlags();
-        this._progress.updateStatus('Calculating distances\u2026');
-        this.calculateDistances();
-        this._progress.updateStatus('Building postorder index\u2026');
-        let result = this._buildPostOrderIndex();
-        // Actually it is array that maps node ordinal number to dominator node ordinal number.
-        this._progress.updateStatus('Building dominator tree\u2026');
-        this._dominatorsTree =
-            this._buildDominatorTree(result.postOrderIndex2NodeOrdinal, result.nodeOrdinal2PostOrderIndex);
-        this._progress.updateStatus('Calculating retained sizes\u2026');
-        this._calculateRetainedSizes(result.postOrderIndex2NodeOrdinal);
-        this._progress.updateStatus('Building dominated nodes\u2026');
-        // this._buildDominatedNodes();
-        this._progress.updateStatus('Calculating statistics\u2026');
-        this.calculateStatistics();
-        this._progress.updateStatus('Calculating aggregates\u2026');
-        this.aggregatesWithFilter(new HeapSnapshotModel.NodeFilter());
-        this._progress.updateStatus('Calculating samples\u2026');
-        // this._buildSamples();
-        this._progress.updateStatus('Finished processing.');
+            this._retainedSizes = new Float64Array(this.nodeCount);
+            this._firstEdgeIndexes = new Uint32Array(this.nodeCount + 1);
+            this._retainingNodes = new Uint32Array(this._edgeCount);
+            this._retainingEdges = new Uint32Array(this._edgeCount);
+            this._firstRetainerIndex = new Uint32Array(this.nodeCount + 1);
+            this._nodeDistances = new Int32Array(this.nodeCount);
+            this._firstDominatedNodeIndex = new Uint32Array(this.nodeCount + 1);
+            this._dominatedNodes = new Uint32Array(this.nodeCount - 1);
 
-        if (this._profile.snapshot.trace_function_count) {
-            this._progress.updateStatus('Building allocation statistics\u2026');
-            let nodes = this.nodes;
-            let nodesLength = nodes.length;
-            let nodeFieldCount = this._nodeFieldCount;
-            let node = this.rootNode();
-            let liveObjects = {};
-            for (let nodeIndex = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount) {
-                node.nodeIndex = nodeIndex;
-                let traceNodeId = node.traceNodeId();
-                let stats = liveObjects[traceNodeId];
-                if (!stats)
-                    liveObjects[traceNodeId] = stats = { count: 0, size: 0, ids: [] };
-                stats.count++;
-                stats.size += node.selfSize();
-                stats.ids.push(node.id());
+            this._buildEdgeIndexes();
+            yield this._progress.updateStatusP({ prefix: `构建 Edge Indexs 完毕`, suffix: `准备开始构建 Retainers` });
+            this._buildRetainers();
+            yield this._progress.updateStatusP({ prefix: `构建 Retainers 完毕`, suffix: `准备开始计算 Node Flags` });
+            this.calculateFlags();
+            yield this._progress.updateStatusP({ prefix: `计算 Node Flags 完毕`, suffix: `准备开始计算 Distances` });
+            this.calculateDistances();
+            yield this._progress.updateStatusP({ prefix: `计算 Distances 完毕`, suffix: `准备开始构建 Postorder Index` });
+            let result = this._buildPostOrderIndex();
+            yield this._progress.updateStatusP({ prefix: `构建 Postorder Index 完毕`, suffix: `准备开始构建 Dominator Tree` });
+            // Actually it is array that maps node ordinal number to dominator node ordinal number.
+            this._dominatorsTree = this._buildDominatorTree(result.postOrderIndex2NodeOrdinal, result.nodeOrdinal2PostOrderIndex);
+            yield this._progress.updateStatusP({ prefix: `构建 Dominator Tree 完毕`, suffix: `准备开始计算 Retained Sizes` });
+            this._calculateRetainedSizes(result.postOrderIndex2NodeOrdinal);
+            yield this._progress.updateStatusP({ prefix: `计算 Retained Sizes 完毕`, suffix: `准备开始计算 Statistics` });
+            // this._progress.updateStatus('Building dominated nodes\u2026');
+            // this._buildDominatedNodes();
+            this.calculateStatistics();
+            yield this._progress.updateStatusP({ prefix: `计算 Statistics 完毕`, suffix: `准备开始计算 Aggregates` });
+            this.aggregatesWithFilter(new HeapSnapshotModel.NodeFilter());
+            yield this._progress.updateStatusP({ prefix: `计算 Aggregates 完毕` });
+            // this._progress.updateStatus('Calculating samples\u2026');
+            // this._buildSamples();
+            yield this._progress.updateStatusP({ prefix: `HeapSnapshot 所有分析完成` }, true);
+
+            if (this._profile.snapshot.trace_function_count) {
+                this._progress.updateStatus('Building allocation statistics\u2026');
+                let nodes = this.nodes;
+                let nodesLength = nodes.length;
+                let nodeFieldCount = this._nodeFieldCount;
+                let node = this.rootNode();
+                let liveObjects = {};
+                for (let nodeIndex = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount) {
+                    node.nodeIndex = nodeIndex;
+                    let traceNodeId = node.traceNodeId();
+                    let stats = liveObjects[traceNodeId];
+                    if (!stats)
+                        liveObjects[traceNodeId] = stats = { count: 0, size: 0, ids: [] };
+                    stats.count++;
+                    stats.size += node.selfSize();
+                    stats.ids.push(node.id());
+                }
+                this._allocationProfile = new HeapSnapshotWorker.AllocationProfile(this._profile, liveObjects);
+                this._progress.updateStatus('Done');
             }
-            this._allocationProfile = new HeapSnapshotWorker.AllocationProfile(this._profile, liveObjects);
-            this._progress.updateStatus('Done');
         }
     }
 
@@ -2404,7 +2411,7 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
             detachedDOMTreeNode: 2,
             pageObject: 4  // The idea is to track separately the objects owned by the page and the objects owned by debugger.
         };
-        this.initialize();
+        // this.initialize();
         this._lazyStringCache = {};
     }
 
