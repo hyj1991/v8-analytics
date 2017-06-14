@@ -907,9 +907,9 @@ HeapSnapshotWorker.HeapSnapshot = class {
             this._dominatorsTree = this._buildDominatorTree(result.postOrderIndex2NodeOrdinal, result.nodeOrdinal2PostOrderIndex);
             yield this._progress.updateStatusP({ prefix: `构建 Dominator Tree 完毕`, suffix: `准备开始计算 Retained Sizes` });
             this._calculateRetainedSizes(result.postOrderIndex2NodeOrdinal);
-            yield this._progress.updateStatusP({ prefix: `计算 Retained Sizes 完毕`, suffix: `准备开始计算 Statistics` });
-            // this._progress.updateStatus('Building dominated nodes\u2026');
-            // this._buildDominatedNodes();
+            yield this._progress.updateStatusP({ prefix: `计算 Retained Sizes 完毕`, suffix: `准备开始构建 Dominated Nodes` });
+            this._buildDominatedNodes();
+            this._progress.updateStatusP({ prefix: `'构建 Dominated Nodes 完毕`, suffix: `准备开始计算 Statistics` });
             this.calculateStatistics();
             yield this._progress.updateStatusP({ prefix: `计算 Statistics 完毕`, suffix: `准备开始计算 Aggregates` });
             this.aggregatesWithFilter(new HeapSnapshotModel.NodeFilter());
