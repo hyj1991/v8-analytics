@@ -909,7 +909,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
             this._calculateRetainedSizes(result.postOrderIndex2NodeOrdinal);
             yield this._progress.updateStatusP({ prefix: `计算 Retained Sizes 完毕`, suffix: `准备开始构建 Dominated Nodes` });
             this._buildDominatedNodes();
-            this._progress.updateStatusP({ prefix: `'构建 Dominated Nodes 完毕`, suffix: `准备开始计算 Statistics` });
+            this._progress.updateStatusP({ prefix: `构建 Dominated Nodes 完毕`, suffix: `准备开始计算 Statistics` });
             this.calculateStatistics();
             yield this._progress.updateStatusP({ prefix: `计算 Statistics 完毕`, suffix: `准备开始计算 Aggregates` });
             this.aggregatesWithFilter(new HeapSnapshotModel.NodeFilter());
