@@ -1,6 +1,6 @@
 {
   "name": "v8-analytics",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "description": "v8 cpu & heap-memory profiler log analystics",
   "main": "lib/analysis.js",
   "preferGlobal": true,
